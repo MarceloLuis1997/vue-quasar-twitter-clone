@@ -1,6 +1,6 @@
 <template>
   <q-page class="relative-position">
-    <q-scroll-area class="absolute fullscreen">
+    <q-scroll-area class="absolute full-width full-height">
       <div class="q-py-lg q-px-md row items-end q-col-gutter-md">
         <div class="col">
           <q-input bottom-slots autogrow v-model="newTweetContent" placeholder="What's happening?" counter maxlength="280" class="new-tweet-text">
@@ -41,7 +41,8 @@ export default {
     addNewTweet () {
       const newTweet = {
         content: this.newTweetContent,
-        date: Date.now()
+        date: Date.now(),
+        liked: false
       }
 
       this.$refs.tweetList.addTweetToList(newTweet)

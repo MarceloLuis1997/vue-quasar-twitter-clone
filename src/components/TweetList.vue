@@ -6,8 +6,8 @@
       leave-active-class="animated fadeOut slow"
     >
       <q-item
-        v-for="(tweet, i) in tweets"
-        :key="i"
+        v-for="tweet in tweets"
+        :key="tweet.id"
         class="q-py-md tweet-item"
       >
         <q-item-section avatar top>
@@ -45,11 +45,12 @@
               round
             />
             <q-btn
-              color="grey"
-              icon="far fa-heart"
+              :color="tweet.liked ? 'pink' : 'grey'"
+              :icon="tweet.liked ? 'fas fa-heart' : 'far fa-heart'"
               size="sm"
               flat
               round
+              @click="handleLiked(tweet)"
             />
             <q-btn
               color="grey"
@@ -57,7 +58,7 @@
               size="sm"
               flat
               round
-              @click="deleteTweet(i)"
+              @click="deleteTweet(tweet.id)"
             />
           </div>
         </q-item-section>
@@ -68,30 +69,62 @@
 
 <script>
 import { formatDistance } from 'date-fns'
-
-import Tweets from '../resources/tweets'
+import db from 'src/boot/firebase'
 
 export default {
   name: 'TweetList',
 
   data: () => ({
-    tweets: Tweets
+    tweets: []
   }),
-
-  methods: {
-    addTweetToList (tweet) {
-      this.tweets.unshift(tweet)
-    },
-
-    deleteTweet (index) {
-      this.tweets.splice(index, 1)
-    }
-  },
 
   filters: {
     relativeDate (value) {
       return formatDistance(value, new Date())
     }
+  },
+
+  methods: {
+    addTweetToList (tweet) {
+      db.collection('tweets').add(tweet)
+    },
+
+    handleLiked (tweet) {
+      db.collection('tweets').doc(tweet.id).update({
+        liked: !tweet.liked
+      })
+    },
+
+    deleteTweet (tweetId) {
+      db.collection('tweets').doc(tweetId).delete()
+    }
+  },
+
+  mounted () {
+    db
+    .collection('tweets')
+    .orderBy('date')
+    .onSnapshot((snaposhot) => {
+      snaposhot.docChanges().forEach((change) => {
+        let index = null
+        const tweetId = change.doc.id
+        const tweetData = change.doc.data()
+
+        switch (change.type) {
+          case 'added':
+            this.tweets.unshift({ ...tweetData, id: tweetId })
+            break
+          case 'modified':
+            index = this.tweets.findIndex(t => t.id === tweetId)
+            Object.assign(this.tweets[index], tweetData)
+            break
+          case 'removed':
+            index = this.tweets.findIndex(t => t.id === tweetId)
+            this.tweets.splice(index, 1)
+            break
+        }
+      })
+    })
   }
 }
 </script>

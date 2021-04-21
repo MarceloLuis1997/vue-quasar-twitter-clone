@@ -22,6 +22,12 @@ const firebaseConfig = {
 }
 ```
 
+## Change the Collection name if needed (default is 'tweets')
+```bash
+// src/components/TweetList.vue
+db.collection('tweets')
+```
+
 ### Start the app in development mode (hot-code reloading, error reporting, etc.)
 ```bash
 quasar dev

@@ -1,23 +1,25 @@
 <template>
-  <q-page>
-    <div class="q-py-lg q-px-md row items-end q-col-gutter-md">
-      <div class="col">
-        <q-input bottom-slots autogrow v-model="newTweetContent" placeholder="What's happening?" counter maxlength="280" class="new-tweet-text">
-          <template v-slot:before>
-            <q-avatar size="xl">
-              <img src="https://cdn.quasar.dev/img/avatar4.jpg">
-            </q-avatar>
-          </template>
-        </q-input>
+  <q-page class="relative-position">
+    <q-scroll-area class="absolute fullscreen">
+      <div class="q-py-lg q-px-md row items-end q-col-gutter-md">
+        <div class="col">
+          <q-input bottom-slots autogrow v-model="newTweetContent" placeholder="What's happening?" counter maxlength="280" class="new-tweet-text">
+            <template v-slot:before>
+              <q-avatar size="xl">
+                <img src="https://cdn.quasar.dev/img/avatar4.jpg">
+              </q-avatar>
+            </template>
+          </q-input>
+        </div>
+        <div class="col col-shrink">
+          <q-btn unelevated no-caps rounded color="primary" label="Tweet" class="q-mb-lg" :disable="!newTweetContent" @click="addNewTweet" />
+        </div>      
       </div>
-      <div class="col col-shrink">
-        <q-btn unelevated no-caps rounded color="primary" label="Tweet" class="q-mb-lg" :disable="!newTweetContent" @click="addNewTweet" />
-      </div>      
-    </div>
 
-    <q-separator size="10px" color="grey-2" class="tweet-divider" />
+      <q-separator size="10px" color="grey-2" class="tweet-divider" />
 
-    <TweetList ref="tweetList" />
+      <TweetList ref="tweetList" />
+    </q-scroll-area>
   </q-page>
 </template>
 

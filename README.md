@@ -1,6 +1,6 @@
 # Quasar Twitter Clone (quasar-twitter-clone)
 
-Twitter Clone with Quasar Framework
+Twitter Clone with Quasar Framework and Firebase
 
 ## Install the dependencies
 ```bash
